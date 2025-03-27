@@ -1,0 +1,47 @@
+transition_prob = {
+    "NOUN": {'NOUN': 0.3, 'VERB': 0.4, 'DET': 0.3},
+    "VERB": {'NOUN': 0.2, 'VERB': 0.5, 'DET': 0.3},
+    "DET": {'NOUN': 0.6, 'VERB': 0.2, 'DET': 0.2}
+}
+
+emission_prob = {
+    "NOUN": {'dog': 0.6, 'cat': 0.4},
+    "VERB": {'barks': 0.5, 'meows': 0.5},
+    "DET": {'the': 0.7, 'a': 0.3}
+}
+
+initial_prob = {
+    "NOUN": 0.3,
+    "VERB": 0.4,
+    "DET": 0.3
+}
+
+sentence = ['the', 'dog', 'barks']
+
+viterbi = [{}]
+path = {}
+
+for tag in initial_prob:
+    viterbi[0][tag] = initial_prob[tag] * emission_prob.get(tag, {}).get(sentence[0], 0)
+    path[tag] = [tag]
+
+for t in range(1, len(sentence)):
+    viterbi.append({})
+    new_path = {}
+
+    for tag in transition_prob:
+        max_prob, prev_tag = max(
+            (viterbi[t - 1][prev_tag] * transition_prob[prev_tag].get(tag, 0) * emission_prob.get(tag, {}).get(sentence[t], 0), prev_tag)
+            for prev_tag in transition_prob
+        )
+        viterbi[t][tag] = max_prob
+        new_path[tag] = path[prev_tag] + [tag]
+
+    path = new_path
+
+max_prob, final_tag = max((viterbi[-1][tag], tag) for tag in viterbi[-1])
+
+best_path = path[final_tag]
+print(f"Sentence: {' '.join(sentence)}")
+print(f"POS Tags: {best_path}")
+# print("Most probable POS tag sequence:", best_path)

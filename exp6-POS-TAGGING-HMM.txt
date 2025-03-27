@@ -1,0 +1,17 @@
+import nltk
+from nltk.corpus import treebank
+from nltk.tag import hmm
+
+nltk.download('treebank')
+nltk.download('universal_tagset')
+
+train_sents = treebank.tagged_sents()
+
+trainer = hmm.HiddenMarkovModelTrainer()
+pos_tagger = trainer.train(train_sents)
+
+sentence = "The quick brown fox jumps over the lazy dog".split()
+tags = pos_tagger.tag(sentence)
+
+print("Sentence:", sentence)
+print("POS Tags:", tags)

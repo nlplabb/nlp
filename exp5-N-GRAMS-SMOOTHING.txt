@@ -1,0 +1,22 @@
+from collections import Counter
+
+def n_grams(text, n):
+    tokens = text.split()
+    return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
+
+def laplace_smoothing(ngrams, vocab_size):
+    ngram_counts = Counter(ngrams)
+    total_count = sum(ngram_counts.values())
+    smoothed_probs = {
+        ngram: (count + 1) / (total_count + vocab_size)
+        for ngram, count in ngram_counts.items()
+    }
+    return smoothed_probs
+
+# Example :
+text = "this is a test this is only a test"
+bigrams = n_grams(text, 2)
+vocab_size = len(set(text.split()))
+smoothed_probs = laplace_smoothing(bigrams, vocab_size)
+
+print(smoothed_probs)

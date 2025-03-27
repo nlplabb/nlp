@@ -1,0 +1,25 @@
+!pip install svgling
+from svgling import draw_tree
+import nltk
+from nltk import word_tokenize, pos_tag
+from nltk.chunk import RegexpParser
+
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
+
+sentence = "The quick brown fox jumped over the lazy dog"
+tokens = word_tokenize(sentence)
+tagged = pos_tag(tokens)
+
+grammar = r"""
+NP: {<DT>?<JJ>*<NN>} # Noun Phrase (optional DT, adjectives, noun)
+VP: {<VB.*><NP|PP>*} # Verb Phrase (verb, followed by noun phrases or prepositions)
+PP: {<IN><NP>} # Prepositional Phrase (preposition followed by noun phrase)
+"""
+
+chunk_parser = RegexpParser(grammar)
+chunked = chunk_parser.parse(tagged)
+print("Chunked Output:")
+print(chunked)
+
+draw_tree(chunked)

@@ -1,0 +1,42 @@
+import string
+import nltk
+from collections import Counter
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+
+def word_analysis(text):
+    text = text.lower()
+
+    text = text.translate(str.maketrans("", "", string.punctuation))
+
+    words = text.split()
+    stop_words = set(stopwords.words("english"))
+    filtered_words = [word for word in words if word not in stop_words]
+
+    lemmatizer = WordNetLemmatizer()
+    lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_words]
+
+    total_words = len(lemmatized_words)
+    unique_words = set(lemmatized_words)
+    word_count = Counter(lemmatized_words)
+
+    print(f"Top Words after Lemmatization: {total_words}")
+    print(f"Number of Unique Words after Lemmatization: {len(unique_words)}\n")
+    print("Top 5 Most Frequent Words (after Lemmatization):")
+
+    for word, freq in word_count.most_common(5):
+        print(f"{word}: {freq}")
+
+text_input = """
+Word analysis is a fundamental task in natural language processing.
+It involves counting words, removing stop words, and analyzing word frequency.
+This experiment demonstrates how word analysis works.
+"""
+
+word_analysis(text_input)

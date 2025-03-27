@@ -1,0 +1,40 @@
+import nltk
+from nltk.corpus import treebank
+from nltk import pos_tag, word_tokenize
+from nltk.classify import NaiveBayesClassifier
+from nltk.probability import FreqDist
+
+nltk.download('treebank')
+nltk.download('punkt')
+train_sents = treebank.tagged_sents()
+
+def word_features(word):
+    """
+    Extract features from a word (e.g., word itself, previous word, next word).
+    """
+    return {
+        'word': word,
+        'word_lower': word.lower(),
+        'prefix-1': word[0],
+        'suffix-1': word[-1],
+        'prefix-2': word[:2],
+        'suffix-2': word[-2:],
+        'is_capitalized': word[0].isupper(),
+        'is_digit': word.isdigit()
+    }
+
+train_data = []
+for sentence in train_sents:
+    for word, tag in sentence:
+        features = word_features(word)
+        train_data.append((features, tag))
+
+classifier = NaiveBayesClassifier.train(train_data)
+
+test_sentence = "The quick brown fox jumps over the lazy dog".split()
+
+test_features = [word_features(word) for word in test_sentence]
+predicted_tags = classifier.classify_many(test_features)
+
+print(f"Sentence: {test_sentence}")
+print(f"POS Tags: {list(zip(test_sentence, predicted_tags))}")

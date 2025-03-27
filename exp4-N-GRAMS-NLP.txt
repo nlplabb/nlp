@@ -1,0 +1,20 @@
+import nltk
+nltk.download('punkt_tab')
+from nltk.util import ngrams
+from collections import Counter
+text = "Data analysis with machine learning provides insights into large datasets."
+tokens = nltk.word_tokenize(text)
+def generate_ngrams(tokens, n):
+    return list(ngrams(tokens, n))
+unigrams = generate_ngrams(tokens, 1)
+bigrams = generate_ngrams(tokens, 2)
+trigrams = generate_ngrams(tokens, 3)
+print("Unigrams:")
+for gram, freq in Counter(unigrams).items():
+    print(f"{gram}: {freq}")
+print("\nBigrams:")
+for gram, freq in Counter(bigrams).items():
+    print(f"{gram}: {freq}")
+print("\nTrigrams:")
+for gram, freq in Counter(trigrams).items():
+    print(f"{gram}: {freq}")
